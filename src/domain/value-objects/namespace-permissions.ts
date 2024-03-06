@@ -1,12 +1,12 @@
 import Namespace from 'src/domain/entities/namespace';
-import Permissions from "../value-objects/permissions";
+import Permissions from "./permissions";
 import ValueObject from "../common/value-object";
 
 export default class NamespacePermissions extends ValueObject{
   private namespace: Namespace;
   permissionList: Permissions;
 
-  protected constructor(namespace: Namespace, permissionList: Permissions) {
+  constructor(namespace: Namespace, permissionList: Permissions) {
     super();
     this.namespace = namespace;
     this.permissionList = Permissions.copyPermissions(permissionList);

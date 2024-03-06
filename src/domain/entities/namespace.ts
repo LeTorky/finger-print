@@ -1,15 +1,10 @@
-import { Types } from "mongoose";
 import Entity from "../common/entity";
 
-type ObjectId = Types.ObjectId;
-
-export default class Namespace extends Entity<ObjectId>{
-  private name: string;
-  constructor(id: ObjectId, name: string) {
-    super(id);
-    this.name = name;
+export default class Namespace extends Entity<string>{
+  constructor(name: string) {
+    super(name);
   }
   getName(): string{
-    return this.name;
+    return this.getId();
   }
 };
