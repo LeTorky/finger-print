@@ -8,9 +8,9 @@ export default class UserRepository implements IUserRepository{
       id: user.getId(),
       ssoId: user.getSsoId(),
       contactInfo: {
-        firstName: user.contactInfo.getFirstName(),
-        lastName: user.contactInfo.getLastName(),
-        email: user.contactInfo.getEmail(),
+        firstName: user.getContactInfo().getFirstName(),
+        lastName: user.getContactInfo().getLastName(),
+        email: user.getContactInfo().getEmail(),
       },
       namespacePermissions: user.getNamespacePermissionsList(),
     })

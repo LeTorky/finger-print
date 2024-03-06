@@ -1,3 +1,5 @@
+import Entity from "./entity";
+
 export default class ValueObject{
   private areElementsEqual(firstSet: any[], secondSet: any[]): boolean{
     let equality = true;
@@ -7,7 +9,7 @@ export default class ValueObject{
 
     // Assert that values are equal for all members.
     for (let i: number = 0; i < firstSet.length && equality; ++i) {
-      if (firstSet[i] instanceof ValueObject)
+      if (firstSet[i] instanceof ValueObject || firstSet[i] instanceof Entity)
         // Recursive equality check for nested ValueObjects.
         equality = firstSet[i].isEqual(secondSet[i]);
       else if (firstSet[i] instanceof Array)

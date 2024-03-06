@@ -4,9 +4,10 @@ import ContactInfo from "../value-objects/contact-info";
 import NamespacePermissions from "../value-objects/namespace-permissions";
 
 export default class User extends Aggregate<UUID>{
-  contactInfo: ContactInfo;
-  private ssoId: string;
+
+  private contactInfo: ContactInfo;
   private namespacePermissions: NamespacePermissions[];
+  private ssoId: string;
 
   constructor(
     id: UUID,
@@ -39,6 +40,18 @@ export default class User extends Aggregate<UUID>{
         }
       };
     })
+  }
+
+  getContactInfo(): ContactInfo{
+    return this.contactInfo;
+  }
+
+  updateContactInfo(contactInfo: ContactInfo){
+    this.contactInfo = contactInfo;
+  }
+
+  updateNamespacePermissionsList(namespacePermissions: NamespacePermissions[]){
+    this.namespacePermissions = namespacePermissions;
   }
 
   getSsoId(): string{
