@@ -1,6 +1,6 @@
 import Namespace from "src/domain/entities/namespace";
 import INamespaceRepository from "./namespace-repository-interface";
-import namespaceModel from "src/infrastructure/database-models/namespace-model";
+import namespaceModel from "src/infrastructure/database-context/models/namespace-model";
 
 export class NamespaceRepository implements INamespaceRepository<string> {
   async getNamespaceById(name: string): Promise<Namespace> {

@@ -4,7 +4,7 @@ import { namespaceSchema, namespaceTable } from "../schema/namespace-schema";
 
 const namespaceModel = mongoose.model<INamespace>(
   namespaceTable,
-  namespaceSchema,
+  namespaceSchema
 );
 
 export default namespaceModel;

@@ -1,6 +1,6 @@
 import User from "src/domain/aggregates/user";
 import IUserRepository from "./user-repository-interface";
-import userModel from "src/infrastructure/database-models/user-model";
+import userModel from "src/infrastructure/database-context/models/user-model";
 import { UUID } from "crypto";
 import Address from "src/domain/value-objects/address";
 import ContactInfo from "src/domain/value-objects/contact-info";
