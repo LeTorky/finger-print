@@ -8,14 +8,17 @@ export default class SessionManagement implements ISessionManagement {
   constructor() {
     this.sessionObject = {};
   }
+
   private extractToken(req: Request): string {
     const tokenHeader = req.headers["Authorization"] as string;
     return tokenHeader.split("AccessToken")[0];
   }
+
   getSession(req: Request): any {
     const token = this.extractToken(req);
     return this.sessionObject[token];
   }
+
   createSession(customToken: string, content: any): any {
     this.sessionObject[customToken] = content;
   }
