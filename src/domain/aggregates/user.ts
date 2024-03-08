@@ -3,8 +3,7 @@ import Aggregate from "../common/aggregate";
 import ContactInfo from "../value-objects/contact-info";
 import NamespacePermissions from "../value-objects/namespace-permissions";
 
-export default class User extends Aggregate<UUID>{
-
+export default class User extends Aggregate<UUID> {
   private contactInfo: ContactInfo;
   private namespacePermissions: NamespacePermissions[];
   private ssoId: string;
@@ -13,8 +12,8 @@ export default class User extends Aggregate<UUID>{
     id: UUID,
     ssoId: string,
     contactInfo: ContactInfo,
-    namespacePermissions: NamespacePermissions[],
-  ){
+    namespacePermissions: NamespacePermissions[]
+  ) {
     super(id);
     this.ssoId = ssoId;
     this.contactInfo = contactInfo;
@@ -24,37 +23,58 @@ export default class User extends Aggregate<UUID>{
   static createNewUser(
     ssoId: string,
     contactInfo: ContactInfo,
-    namespacePermissions: NamespacePermissions[],
+    namespacePermissions: NamespacePermissions[]
   ): User {
     return new User(randomUUID(), ssoId, contactInfo, namespacePermissions);
   }
 
-  getNamespacePermissionsList(): any[]{
-    return this.namespacePermissions.map((namespacePermission) => {
-      return {
-        namespace: {
-          name: namespacePermission.getNamespaceName(),
-        },
-        permissionList: {
-          permissionList: namespacePermission.permissionList.getPermissions(),
-        }
-      };
-    })
+  getNamespacePermissionsList(): any[] {
+    return this.namespacePermissions;
   }
 
-  getContactInfo(): ContactInfo{
+  getContactInfo(): ContactInfo {
     return this.contactInfo;
   }
 
-  updateContactInfo(contactInfo: ContactInfo){
+  updateContactInfo(contactInfo: ContactInfo) {
     this.contactInfo = contactInfo;
   }
 
-  updateNamespacePermissionsList(namespacePermissions: NamespacePermissions[]){
+  updateNamespacePermissionsList(namespacePermissions: NamespacePermissions[]) {
     this.namespacePermissions = namespacePermissions;
   }
 
-  getSsoId(): string{
+  getSsoId(): string {
     return this.ssoId;
+  }
+
+  getRepresentation(): any {
+    return {
+      id: this.getId(),
+      ssoId: this.getSsoId(),
+      contactInfo: {
+        firstName: this.contactInfo.getFirstName(),
+        lastName: this.contactInfo.getLastName(),
+        email: this.contactInfo.getEmail(),
+        address: {
+          country: this.contactInfo.address.getCountry(),
+          city: this.contactInfo.address.getCity(),
+          address: this.contactInfo.address.getAddress(),
+        },
+      },
+      namespacePermissions: this.getNamespacePermissionsList().map(
+        (namespacePermission) => {
+          return {
+            namespace: {
+              name: namespacePermission.getNamespaceName(),
+            },
+            permissionList: {
+              permissionList:
+                namespacePermission.permissionList.getPermissions(),
+            },
+          };
+        }
+      ),
+    };
   }
 }

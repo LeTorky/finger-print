@@ -1,14 +1,18 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import MongooseConnection from './infrastructure/connection/concretes/db-connection';
+import { NestFactory } from "@nestjs/core";
+import { AppModule } from "./app.module";
+import MongooseConnection from "./infrastructure/connection/db-connection";
+import * as dotenv from "dotenv";
+
+dotenv.config();
+const DBCONNECTIONSTRING = process.env.DB_CONNECTION_STRING;
+const PORT = process.env.PORT;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const dbConnection = new MongooseConnection(
-    `mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.1.9`,
-  );
+  const dbConnection = new MongooseConnection(DBCONNECTIONSTRING);
+  app.enableCors();
   dbConnection.connect();
-  await app.listen(3000);
+  await app.listen(PORT);
 }
 
 bootstrap();
