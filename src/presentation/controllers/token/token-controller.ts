@@ -44,6 +44,7 @@ export class TokenController {
       redirect_uri: origin,
     });
     const accessToken = oAuthResponse["access_token"];
+    const refreshToken = oAuthResponse["refresh_token"];
     const payLoad = this.oAuthClient.decodeAccessToken(accessToken);
     const ssoId = payLoad["sub"];
     const user = await this.userUseCases.getUserBySsoID(ssoId);
@@ -56,7 +57,8 @@ export class TokenController {
     this.sessionManagement.createSession(customToken, {
       ssoId: user.ssoId,
       id: userId,
-      accessToken: accessToken,
+      accessToken,
+      refreshToken,
     });
 
     return res
