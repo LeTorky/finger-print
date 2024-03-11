@@ -22,4 +22,10 @@ export default class SessionManagement implements ISessionManagement {
   createSession(customToken: string, content: any): any {
     this.sessionLookup[customToken] = content;
   }
+
+  deleteSession(req: Request): void {
+    const customToken = this.extractToken(req);
+    if (!this.sessionLookup[customToken]) throw Error("to do");
+    delete this.sessionLookup[customToken];
+  }
 }

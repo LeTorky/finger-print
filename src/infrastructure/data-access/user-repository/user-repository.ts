@@ -65,7 +65,7 @@ export default class UserRepository implements IUserRepository {
 
   async saveUser(userToSave: User): Promise<User> {
     await userModel.updateOne(
-      { ssoId: userToSave.getSsoId(), _id: userToSave.getId() },
+      { _id: userToSave.getId() },
       userToSave.getRepresentation()
     );
     return userToSave;

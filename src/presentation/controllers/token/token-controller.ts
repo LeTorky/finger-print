@@ -11,7 +11,7 @@ import TokenManagementInterface, {
 import IOAuthClient, {
   IOAuthClientSymbol,
 } from "src/application/services/sso-client/oauth-client-interface";
-import { Response } from "express";
+import { Response, Request } from "express";
 
 @Controller("token")
 export class TokenController {
@@ -32,7 +32,13 @@ export class TokenController {
     this.sessionManagement = SessionManagement;
   }
 
-  @Post("custom-token")
+  @Post("logout")
+  async logOut(@Req() req: Request, @Res() res: Response): Promise<Response> {
+    this.sessionManagement.deleteSession(req);
+    return res.status(200).send("OK");
+  }
+
+  @Post("custom")
   async getCustomToken(
     @Body("code") code: string,
     @Res() res: Response,
