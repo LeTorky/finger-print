@@ -5,7 +5,7 @@ export default interface INamespaceUseCases {
   createNewNamespace(callerSsoID: string, name: string): Promise<NamespaceDTO>;
   editNamespace(
     callerSsoID: string,
-    oldName: string,
+    namespaceName: string,
     namespace: NamespaceDTO
   ): Promise<NamespaceDTO>;
   deleteNamespace(callerSsoID: string, name: string): Promise<boolean>;

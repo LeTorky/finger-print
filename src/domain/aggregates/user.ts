@@ -111,4 +111,9 @@ export default class User extends Aggregate<UUID> {
     if (!userPolicies.canCreateNameSpace(this)) throw Error("to do");
     return new Namespace(name);
   }
+
+  updateNamespace(newName: string, userPolicies: IUserPolicies) {
+    if (!userPolicies.canEditNameSpace(this)) throw Error("to do");
+    return new Namespace(newName);
+  }
 }

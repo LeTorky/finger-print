@@ -74,10 +74,18 @@ export default class NamespaceUseCases implements INamespaceUseCases {
 
   async editNamespace(
     callerSsoID: string,
-    oldName: string,
+    namespaceName: string,
     namespace: NamespaceDTO
   ): Promise<NamespaceDTO> {
-    throw new Error("Method not implemented.");
+    const callingUser = await this.userRepository.getUserBySsoId(callerSsoID);
+    const newNamespace = callingUser.updateNamespace(
+      namespace.name,
+      this.userPolicies
+    );
+    const savedNamespace =
+      await this.namespaceRepository.createNamespace(newNamespace);
+    await this.namespaceRepository.deleteNamespace(namespaceName);
+    return savedNamespace.getRepresentation();
   }
 
   async deleteNamespace(callerSsoID: string, name: string): Promise<boolean> {

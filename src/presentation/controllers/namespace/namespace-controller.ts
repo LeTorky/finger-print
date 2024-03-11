@@ -43,16 +43,21 @@ export default class NamespaceController {
     return createdNamespace;
   }
 
-  // @Put()
-  // async editUser(
-  //   @Req() req: Request,
-  //   @Body("user") userToEdit: UserDTO
-  // ): Promise<UserDTO> {
-  //   const session = this.sessionManagement.getSession(req);
-  //   const ssoId = session["ssoId"];
-  //   const edittedUser = this.namespaceUseCases.editUser(userToEdit, ssoId);
-  //   return edittedUser;
-  // }
+  @Put()
+  async editNamespace(
+    @Req() req: Request,
+    @Body("name") name: string,
+    @Body("namespace") namespace: NamespaceDTO
+  ): Promise<NamespaceDTO> {
+    const session = this.sessionManagement.getSession(req);
+    const ssoId = session["ssoId"];
+    const edittedUser = this.namespaceUseCases.editNamespace(
+      ssoId,
+      name,
+      namespace
+    );
+    return edittedUser;
+  }
 
   @Delete(":name")
   async deleteNamespace(
