@@ -91,6 +91,14 @@ export default class UserUseCases implements IUserUseCases {
     return user.getRepresentation() as UserDTO;
   }
 
+  async getAllUsers(callerSsoID: string): Promise<UserDTO[]> {
+    const callingUser = await this.userRepository.getUserBySsoId(callerSsoID);
+    if (!this.userPolicies.canViewUser(callingUser))
+      throw new NoPermission("Not enough permission to view users.");
+    const users = await this.userRepository.getAllUsers();
+    return users.map((user) => user.getRepresentation());
+  }
+
   async createNewUser(
     userToCreate: UserDTO,
     callerSsoID: string

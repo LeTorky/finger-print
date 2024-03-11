@@ -53,6 +53,14 @@ export default class UserController {
     return fetchedUser;
   }
 
+  @Get()
+  async getAllUsers(@Req() req: Request): Promise<UserDTO[]> {
+    const session = this.sessionManagement.getSession(req);
+    const ssoId = session["ssoId"];
+    const fetchedUser = this.userUseCases.getAllUsers(ssoId);
+    return fetchedUser;
+  }
+
   @Put(":id")
   async editUser(
     @Req() req: Request,

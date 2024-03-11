@@ -12,6 +12,13 @@ import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export default class UserRepository implements IUserRepository<UUID> {
+  async getAllUsers(): Promise<User[]> {
+    const users = await userModel
+      .find()
+      .populate("namespacePermissions.namespace");
+    return users.map((user) => this.modelToUser(user));
+  }
+
   async createUser(user: User): Promise<User> {
     const userRepresentation = user.getRepresentation();
     userRepresentation.namespacePermissions.forEach(

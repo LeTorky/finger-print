@@ -6,6 +6,8 @@ export default interface IUserRepository<IdType> {
 
   getUserById(id: IdType): Promise<User>;
 
+  getAllUsers(): Promise<User[]>;
+
   getUserBySsoId(ssoId: string): Promise<User>;
 
   saveUser(userToSave: User): Promise<User>;
