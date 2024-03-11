@@ -21,6 +21,7 @@ import IUserEvent from "src/domain/events/user/user-events/user-event-interface"
 import UserEvent from "src/domain/events/user/user-events/user-update-event";
 import { UUID } from "crypto";
 import NoPermission from "src/domain/common/domain-common-exceptions";
+import ApplicationException from "src/application/exceptions/application-exceptions";
 
 @Injectable()
 export default class UserUseCases implements IUserUseCases {
@@ -106,9 +107,12 @@ export default class UserUseCases implements IUserUseCases {
       namespacePermissions,
       this.userPolicies
     );
-
-    const createdUser = await this.userRepository.createUser(newUser);
-    return createdUser.getRepresentation() as UserDTO;
+    try {
+      const createdUser = await this.userRepository.createUser(newUser);
+      return createdUser.getRepresentation() as UserDTO;
+    } catch (Exception) {
+      throw new ApplicationException(Exception.message);
+    }
   }
 
   async editUser(userToEdit: UserDTO, callerSsoID: string): Promise<UserDTO> {
@@ -134,9 +138,12 @@ export default class UserUseCases implements IUserUseCases {
       userEvent,
       this.userEventBus
     );
-
-    const edittedUser = await this.userRepository.saveUser(oldUser);
-    return edittedUser.getRepresentation() as UserDTO;
+    try {
+      const edittedUser = await this.userRepository.saveUser(oldUser);
+      return edittedUser.getRepresentation() as UserDTO;
+    } catch (Exception) {
+      throw new ApplicationException(Exception.message);
+    }
   }
 
   async deleteUser(id: UUID, callerSsoID: string): Promise<boolean> {

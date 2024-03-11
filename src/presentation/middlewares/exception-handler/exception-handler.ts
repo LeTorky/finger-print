@@ -1,3 +1,4 @@
+import ApplicationException from "src/application/exceptions/application-exceptions";
 import {
   Catch,
   ExceptionFilter,
@@ -15,6 +16,7 @@ const errorClassLookup = {
   NoPermission,
   SessionException,
   CORSException,
+  ApplicationException,
 };
 
 @Catch()
