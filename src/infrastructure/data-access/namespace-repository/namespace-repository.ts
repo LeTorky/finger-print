@@ -6,8 +6,8 @@ import userModel from "src/infrastructure/database-context/models/user-model";
 export class NamespaceRepository implements INamespaceRepository<string> {
   async getNamespaceById(name: string): Promise<Namespace> {
     const namespaceInstance = await namespaceModel.findById(name);
-    if (namespaceInstance) return new Namespace(namespaceInstance.name);
-    else throw new Error("to do");
+    if (!namespaceInstance) return null;
+    return new Namespace(namespaceInstance.name);
   }
 
   async createNamespace(nameSpace: Namespace): Promise<Namespace> {
@@ -38,7 +38,8 @@ export class NamespaceRepository implements INamespaceRepository<string> {
   }
 
   async deleteNamespace(name: string): Promise<boolean> {
-    await namespaceModel.deleteOne({ _id: name });
-    return true;
+    const deletedCount = await namespaceModel.deleteOne({ _id: name });
+    const deleted = Boolean(deletedCount.deletedCount);
+    return deleted;
   }
 }

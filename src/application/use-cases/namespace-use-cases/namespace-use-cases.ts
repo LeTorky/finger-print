@@ -13,6 +13,7 @@ import INamespaceRepository, {
   INamespaceRepositorySymbol,
 } from "src/infrastructure/data-access/namespace-repository/namespace-repository-interface";
 import NoPermission from "src/domain/common/domain-common-exceptions";
+import ApplicationException from "src/application/exceptions/application-exceptions";
 
 @Injectable()
 export default class NamespaceUseCases implements INamespaceUseCases {
@@ -39,6 +40,7 @@ export default class NamespaceUseCases implements INamespaceUseCases {
     if (!this.userPolicies.canViewNameSpace(callingUser))
       throw new NoPermission("Not enough permissions to view name spaces.");
     const namespace = await this.namespaceRepository.getNamespaceById(name);
+    if (!namespace) throw new ApplicationException("Namespace does not exist.");
     return namespace.getRepresentation();
   }
 
@@ -60,6 +62,8 @@ export default class NamespaceUseCases implements INamespaceUseCases {
     namespaceName: string,
     namespace: NamespaceDTO
   ): Promise<NamespaceDTO> {
+    if (!(await this.namespaceRepository.getNamespaceById(namespaceName)))
+      throw new ApplicationException("Namespace does not exist.");
     const callingUser = await this.userRepository.getUserBySsoId(callerSsoID);
     const newNamespace = callingUser.updateNamespace(
       namespace.name,
@@ -77,6 +81,7 @@ export default class NamespaceUseCases implements INamespaceUseCases {
     if (!this.userPolicies.canDeleteNameSpace(callingUser))
       throw new NoPermission("Not enough permissions to delete name space.");
     const deleted = await this.namespaceRepository.deleteNamespace(name);
-    return deleted;
+    if (!deleted) throw new ApplicationException("Namespace does not exist.");
+    return true;
   }
 }

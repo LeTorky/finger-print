@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Inject,
   Param,
   Post,
@@ -41,6 +42,20 @@ export default class NamespaceController {
       name
     );
     return createdNamespace;
+  }
+
+  @Get(":name")
+  async getNamespace(
+    @Req() req: Request,
+    @Param("name") name: string
+  ): Promise<NamespaceDTO> {
+    const session = this.sessionManagement.getSession(req);
+    const ssoId = session["ssoId"];
+    const fetchedNamespace = await this.namespaceUseCases.getNamespaceByName(
+      ssoId,
+      name
+    );
+    return fetchedNamespace;
   }
 
   @Put(":name")
