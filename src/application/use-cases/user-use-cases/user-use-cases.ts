@@ -23,12 +23,12 @@ import { UUID } from "crypto";
 
 @Injectable()
 export default class UserUseCases implements IUserUseCases {
-  private userRepository: IUserRepository;
+  private userRepository: IUserRepository<UUID>;
   private userPolicies: IUserPolicies;
   private userEventBus: IUserEventBus;
 
   constructor(
-    @Inject(IUserRepositorySymbol) userRepository: IUserRepository,
+    @Inject(IUserRepositorySymbol) userRepository: IUserRepository<UUID>,
     @Inject(IUserPoliciesSymbol) userPolicies: IUserPolicies,
     @Inject(IUserEventBusSymbol) userEventBus: IUserEventBus
   ) {

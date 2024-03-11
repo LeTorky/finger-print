@@ -1,16 +1,16 @@
 import { UUID } from "crypto";
 import User from "src/domain/aggregates/user";
 
-export default interface IUserRepository {
+export default interface IUserRepository<IdType> {
   createUser(user: User): Promise<User>;
 
-  getUserById(id: UUID): Promise<User>;
+  getUserById(id: IdType): Promise<User>;
 
   getUserBySsoId(ssoId: string): Promise<User>;
 
   saveUser(userToSave: User): Promise<User>;
 
-  deleteUser(id: UUID): Promise<boolean>;
+  deleteUser(id: IdType): Promise<boolean>;
 }
 
 export const IUserRepositorySymbol = Symbol("IUserRepository");

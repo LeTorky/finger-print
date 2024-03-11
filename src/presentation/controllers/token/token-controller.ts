@@ -32,15 +32,17 @@ export class TokenController {
     this.sessionManagement = SessionManagement;
   }
 
-  @Post("custom")
+  @Post("exchange")
   async getCustomToken(
     @Body("code") code: string,
+    @Body("scope") scope: string[],
     @Res() res: Response,
     @Req() req: Request
   ): Promise<Response> {
     const origin = req.headers["origin"];
     const oAuthResponse = await this.oAuthClient.getAccessToken({
       code,
+      scope,
       redirect_uri: origin,
     });
     const accessToken = oAuthResponse["access_token"];

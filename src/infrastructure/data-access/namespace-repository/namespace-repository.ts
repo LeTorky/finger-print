@@ -6,10 +6,11 @@ export class NamespaceRepository implements INamespaceRepository<string> {
   async getNamespaceById(name: string): Promise<Namespace> {
     const namespaceInstance = await namespaceModel.findById(name);
     if (namespaceInstance) return new Namespace(namespaceInstance.name);
-    else throw new Error("Not found!");
+    else throw new Error("to do");
   }
 
   async createNamespace(nameSpace: Namespace): Promise<Namespace> {
+    console.log(nameSpace.getName());
     await namespaceModel.create({
       name: nameSpace.getName(),
     });
@@ -17,14 +18,19 @@ export class NamespaceRepository implements INamespaceRepository<string> {
   }
 
   async changeNamespaceId(
-    namespace: Namespace,
-    newName: string
+    oldName: string,
+    namespace: Namespace
   ): Promise<Namespace> {
     const updatedUser = await namespaceModel.findOneAndUpdate(
+      { name: oldName },
       { name: namespace.getName() },
-      { name: newName },
       { new: true }
     );
     return new Namespace(updatedUser.name);
+  }
+
+  async deleteNamespace(name: string): Promise<boolean> {
+    await namespaceModel.deleteOne({ _id: name });
+    return true;
   }
 }

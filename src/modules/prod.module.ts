@@ -1,11 +1,6 @@
 import { ISessionManagementSymbol } from "../presentation/services/session-management/session-management-interface";
 import { IUserUseCasesSymbol } from "../application/use-cases/user-use-cases/user-use-cases-interface";
-import {
-  Inject,
-  MiddlewareConsumer,
-  Module,
-  RequestMethod,
-} from "@nestjs/common";
+import { MiddlewareConsumer, Module } from "@nestjs/common";
 import { TokenController } from "../presentation/controllers/token/token-controller";
 import { ITokenManagementSymbol } from "../presentation/services/token-management/token-management-interface";
 import TokenManagement from "../presentation/services/token-management/token-management";
@@ -21,10 +16,15 @@ import UserEventBus from "src/domain/events/user/user-event-bus/user-event-bus";
 import { IUserPoliciesSymbol } from "src/domain/policies/user-policies/user-policies-interface";
 import UserPolicies from "src/domain/policies/user-policies/user-policies";
 import { ResourceUseCORS } from "src/presentation/middlewares/cors/resource-use-cors";
+import { INamespaceRepositorySymbol } from "src/infrastructure/data-access/namespace-repository/namespace-repository-interface";
+import { NamespaceRepository } from "src/infrastructure/data-access/namespace-repository/namespace-repository";
+import { INamespaceUseCasesSymbol } from "src/application/use-cases/namespace-use-cases/namespace-use-cases-interface";
+import NamespaceUseCases from "src/application/use-cases/namespace-use-cases/namespace-use-cases";
+import NamespaceController from "src/presentation/controllers/namespace/namespace-controller";
 
 @Module({
   imports: [],
-  controllers: [TokenController, UserController],
+  controllers: [TokenController, UserController, NamespaceController],
   providers: [
     {
       provide: ITokenManagementSymbol,
@@ -57,6 +57,14 @@ import { ResourceUseCORS } from "src/presentation/middlewares/cors/resource-use-
     {
       provide: IUserPoliciesSymbol,
       useClass: UserPolicies,
+    },
+    {
+      provide: INamespaceRepositorySymbol,
+      useClass: NamespaceRepository,
+    },
+    {
+      provide: INamespaceUseCasesSymbol,
+      useClass: NamespaceUseCases,
     },
   ],
 })

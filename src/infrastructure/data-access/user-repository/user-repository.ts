@@ -11,7 +11,7 @@ import IUser from "src/domain/interfaces/user-interface";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
-export default class UserRepository implements IUserRepository {
+export default class UserRepository implements IUserRepository<UUID> {
   async createUser(user: User): Promise<User> {
     await userModel.create(user.getRepresentation());
     return user;

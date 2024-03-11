@@ -5,6 +5,7 @@ import NamespacePermissions from "../value-objects/namespace-permissions";
 import IUserPolicies from "../policies/user-policies/user-policies-interface";
 import IUserEvent from "../events/user/user-events/user-event-interface";
 import IUserEventBus from "../events/user/user-event-bus/user-event-bus-interface";
+import Namespace from "../entities/namespace";
 
 export default class User extends Aggregate<UUID> {
   private contactInfo: ContactInfo;
@@ -104,5 +105,10 @@ export default class User extends Aggregate<UUID> {
         }
       ),
     };
+  }
+
+  createNamespace(name: string, userPolicies: IUserPolicies) {
+    if (!userPolicies.canCreateNameSpace(this)) throw Error("to do");
+    return new Namespace(name);
   }
 }

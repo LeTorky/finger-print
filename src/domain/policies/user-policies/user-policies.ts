@@ -8,7 +8,9 @@ import {
   canWriteUser,
 } from "src/domain/enums/permissions-enums/user-permissions-enums";
 import {
+  canDeleteNameSpace,
   canEditNameSpace,
+  canReadNameSpace,
   canWriteNameSpace,
 } from "src/domain/enums/permissions-enums/name-space-permissions-enums";
 import { Injectable } from "@nestjs/common";
@@ -67,6 +69,19 @@ export default class UserPolicies implements IUserPolicies {
       );
   }
 
+  canViewNameSpace(user: User): boolean {
+    return user
+      .getNamespacePermissionsList()
+      .reduce(
+        (final, current) =>
+          current.getNamespaceName() == FINGER_PRINT_NAMESPACE &&
+          current.permissionList.getPermissions().includes(canReadNameSpace)
+            ? true
+            : final,
+        false
+      );
+  }
+
   canEditNameSpace(user: User): boolean {
     return user
       .getNamespacePermissionsList()
@@ -74,6 +89,19 @@ export default class UserPolicies implements IUserPolicies {
         (final, current) =>
           current.getNamespaceName() == FINGER_PRINT_NAMESPACE &&
           current.permissionList.getPermissions().includes(canEditNameSpace)
+            ? true
+            : final,
+        false
+      );
+  }
+
+  canDeleteNameSpace(user: User): boolean {
+    return user
+      .getNamespacePermissionsList()
+      .reduce(
+        (final, current) =>
+          current.getNamespaceName() == FINGER_PRINT_NAMESPACE &&
+          current.permissionList.getPermissions().includes(canDeleteNameSpace)
             ? true
             : final,
         false
