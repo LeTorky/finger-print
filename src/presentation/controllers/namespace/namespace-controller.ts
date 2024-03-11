@@ -43,10 +43,10 @@ export default class NamespaceController {
     return createdNamespace;
   }
 
-  @Put()
+  @Put(":name")
   async editNamespace(
     @Req() req: Request,
-    @Body("name") name: string,
+    @Param("name") name: string,
     @Body("namespace") namespace: NamespaceDTO
   ): Promise<NamespaceDTO> {
     const session = this.sessionManagement.getSession(req);
