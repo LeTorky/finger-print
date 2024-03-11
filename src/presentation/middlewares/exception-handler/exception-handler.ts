@@ -9,10 +9,12 @@ import {
 import { Request, Response } from "express";
 import NoPermission from "src/domain/common/domain-common-exceptions";
 import SessionException from "src/presentation/services/exceptions/session-exceptions";
+import CORSException from "../exceptions/cors-exceptions";
 
 const errorClassLookup = {
   NoPermission,
   SessionException,
+  CORSException,
 };
 
 @Catch()
