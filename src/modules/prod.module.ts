@@ -1,6 +1,11 @@
 import { ISessionManagementSymbol } from "../presentation/services/session-management/session-management-interface";
 import { IUserUseCasesSymbol } from "../application/use-cases/user-use-cases/user-use-cases-interface";
-import { Module } from "@nestjs/common";
+import {
+  Inject,
+  MiddlewareConsumer,
+  Module,
+  RequestMethod,
+} from "@nestjs/common";
 import { TokenController } from "../presentation/controllers/token/token-controller";
 import { ITokenManagementSymbol } from "../presentation/services/token-management/token-management-interface";
 import TokenManagement from "../presentation/services/token-management/token-management";
@@ -15,6 +20,7 @@ import { IUserEventBusSymbol } from "src/domain/events/user/user-event-bus/user-
 import UserEventBus from "src/domain/events/user/user-event-bus/user-event-bus";
 import { IUserPoliciesSymbol } from "src/domain/policies/user-policies/user-policies-interface";
 import UserPolicies from "src/domain/policies/user-policies/user-policies";
+import { ResourceUseCORS } from "src/presentation/middlewares/cors/resource-use-cors";
 
 @Module({
   imports: [],
@@ -54,4 +60,8 @@ import UserPolicies from "src/domain/policies/user-policies/user-policies";
     },
   ],
 })
-export class ProdModule {}
+export class ProdModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(ResourceUseCORS).forRoutes("*");
+  }
+}
