@@ -13,7 +13,7 @@ import IOAuthClient, {
 } from "src/application/services/sso-client/oauth-client-interface";
 import { Response } from "express";
 
-@Controller()
+@Controller("token")
 export class TokenController {
   private userUseCases: IUserUseCases;
   private oAuthClient: IOAuthClient;
@@ -32,7 +32,7 @@ export class TokenController {
     this.sessionManagement = SessionManagement;
   }
 
-  @Post()
+  @Post("custom-token")
   async getCustomToken(
     @Body("code") code: string,
     @Res() res: Response,
@@ -47,7 +47,7 @@ export class TokenController {
     const refreshToken = oAuthResponse["refresh_token"];
     const payLoad = this.oAuthClient.decodeAccessToken(accessToken);
     const ssoId = payLoad["sub"];
-    const user = await this.userUseCases.getUserBySsoID(ssoId);
+    const user = await this.userUseCases.getUserBySsoID(ssoId, ssoId);
     const userId = user.id;
 
     // Can't provide database column in a token (Vulnerability).

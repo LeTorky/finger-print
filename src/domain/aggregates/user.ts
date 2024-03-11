@@ -2,6 +2,9 @@ import { UUID, randomUUID } from "crypto";
 import Aggregate from "../common/aggregate";
 import ContactInfo from "../value-objects/contact-info";
 import NamespacePermissions from "../value-objects/namespace-permissions";
+import IUserPolicies from "../policies/user-policies/user-policies-interface";
+import IUserEvent from "../events/user/user-events/user-event-interface";
+import IUserEventBus from "../events/user/user-event-bus/user-event-bus-interface";
 
 export default class User extends Aggregate<UUID> {
   private contactInfo: ContactInfo;
@@ -20,15 +23,28 @@ export default class User extends Aggregate<UUID> {
     this.namespacePermissions = [...namespacePermissions];
   }
 
-  static createNewUser(
+  createNewUser(
     ssoId: string,
     contactInfo: ContactInfo,
-    namespacePermissions: NamespacePermissions[]
+    namespacePermissions: NamespacePermissions[],
+    userPolicies: IUserPolicies
   ): User {
+    if (!userPolicies.canCreateNewUser(this)) throw Error("to do");
     return new User(randomUUID(), ssoId, contactInfo, namespacePermissions);
   }
 
-  getNamespacePermissionsList(): any[] {
+  getExistingUser(
+    id: UUID,
+    ssoId: string,
+    contactInfo: ContactInfo,
+    namespacePermissions: NamespacePermissions[],
+    userPolicies: IUserPolicies
+  ): User {
+    if (!userPolicies.canViewUser(this)) throw Error("to do");
+    return new User(id, ssoId, contactInfo, namespacePermissions);
+  }
+
+  getNamespacePermissionsList(): NamespacePermissions[] {
     return this.namespacePermissions;
   }
 
@@ -36,12 +52,24 @@ export default class User extends Aggregate<UUID> {
     return this.contactInfo;
   }
 
-  updateContactInfo(contactInfo: ContactInfo) {
-    this.contactInfo = contactInfo;
+  publishUserChanges(
+    userPolicies: IUserPolicies,
+    event: IUserEvent,
+    eventBus: IUserEventBus
+  ) {
+    if (!userPolicies.canEditUser(this)) throw Error("to do");
+    eventBus.publishUserEvent(event);
   }
 
-  updateNamespacePermissionsList(namespacePermissions: NamespacePermissions[]) {
-    this.namespacePermissions = namespacePermissions;
+  handleUserEvent(userEvent: IUserEvent) {
+    if (userEvent.getSsoId() == this.ssoId) {
+      this.contactInfo = userEvent.getContactInfo();
+      this.namespacePermissions = userEvent.getNamespacePermissionsList();
+    }
+  }
+
+  subscribeToEventBus(eventBus: IUserEventBus) {
+    eventBus.subscribeToUserEvent(this);
   }
 
   getSsoId(): string {
@@ -57,9 +85,9 @@ export default class User extends Aggregate<UUID> {
         lastName: this.contactInfo.getLastName(),
         email: this.contactInfo.getEmail(),
         address: {
-          country: this.contactInfo.address.getCountry(),
-          city: this.contactInfo.address.getCity(),
-          address: this.contactInfo.address.getAddress(),
+          country: this.contactInfo.getAddress().getCountry(),
+          city: this.contactInfo.getAddress().getCity(),
+          address: this.contactInfo.getAddress().getAddress(),
         },
       },
       namespacePermissions: this.getNamespacePermissionsList().map(

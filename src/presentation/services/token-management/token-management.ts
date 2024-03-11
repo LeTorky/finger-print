@@ -13,11 +13,12 @@ const publicKey = fs.readFileSync(publicKeyPath, "utf8");
 
 @Injectable()
 export default class TokenManagement implements ITokenManagement {
-  IssueToken(content: {}, expirationTime: number): string {
+  IssueToken(content: any, expirationTime: number): string {
     content["exp"] = Math.floor(Date.now() / 1000) + expirationTime;
     const token = jwt.sign(content, privateKey, { algorithm: "RS256" });
     return token;
   }
+
   DecodeToken(token: string): any {
     return jwt.decode(token, publicKey, { algorithm: "RS256" });
   }

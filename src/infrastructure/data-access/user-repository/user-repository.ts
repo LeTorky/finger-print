@@ -62,4 +62,19 @@ export default class UserRepository implements IUserRepository {
     const user = await userModel.findOne({ ssoId: ssoId });
     return this.modelToUser(user);
   }
+
+  async saveUser(userToSave: User): Promise<User> {
+    await userModel.updateOne(
+      { ssoId: userToSave.getSsoId(), _id: userToSave.getId() },
+      userToSave.getRepresentation()
+    );
+    return userToSave;
+  }
+
+  async deleteUser(id: UUID): Promise<boolean> {
+    await userModel.deleteOne({
+      id: id,
+    });
+    return true;
+  }
 }

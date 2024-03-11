@@ -4,22 +4,22 @@ import { Request } from "express";
 
 @Injectable()
 export default class SessionManagement implements ISessionManagement {
-  private sessionObject: any;
+  private sessionLookup: any;
   constructor() {
-    this.sessionObject = {};
+    this.sessionLookup = {};
   }
 
   private extractToken(req: Request): string {
-    const tokenHeader = req.headers["Authorization"] as string;
-    return tokenHeader.split("AccessToken")[0];
+    const tokenHeader = req.headers["authorization"] as string;
+    return tokenHeader.split("AccessToken ")[1];
   }
 
   getSession(req: Request): any {
     const token = this.extractToken(req);
-    return this.sessionObject[token];
+    return this.sessionLookup[token];
   }
 
   createSession(customToken: string, content: any): any {
-    this.sessionObject[customToken] = content;
+    this.sessionLookup[customToken] = content;
   }
 }

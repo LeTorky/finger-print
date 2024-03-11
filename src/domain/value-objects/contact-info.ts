@@ -1,11 +1,11 @@
-import ValueObject from '../common/value-object';
-import Address from './address';
+import ValueObject from "../common/value-object";
+import Address from "./address";
 
-export default class ContactInfo extends ValueObject{
+export default class ContactInfo extends ValueObject {
   private firstName: string;
   private lastName: string;
   private email: string;
-  public address: Address;
+  private address: Address;
 
   constructor(
     firstName: string,
@@ -20,15 +20,15 @@ export default class ContactInfo extends ValueObject{
     this.address = address;
   }
 
-  getFirstName(): string{
+  getFirstName(): string {
     return this.firstName;
   }
 
-  getLastName(): string{
+  getLastName(): string {
     return this.lastName;
   }
 
-  getEmail(): string{
+  getEmail(): string {
     return this.email;
   }
 
@@ -48,12 +48,16 @@ export default class ContactInfo extends ValueObject{
     return new ContactInfo(this.firstName, this.lastName, this.email, address);
   }
 
+  getAddress(): Address {
+    return this.address;
+  }
+
   static copyContactInfo(contactInfo: ContactInfo): ContactInfo {
     return new ContactInfo(
       contactInfo.getFirstName(),
       contactInfo.getLastName(),
       contactInfo.getEmail(),
-      contactInfo.address
+      contactInfo.getAddress()
     );
   }
 }

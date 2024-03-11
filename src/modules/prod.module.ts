@@ -10,10 +10,15 @@ import { IUserRepositorySymbol } from "../infrastructure/data-access/user-reposi
 import UserUseCases from "../application/use-cases/user-use-cases/user-use-cases";
 import UserRepository from "../infrastructure/data-access/user-repository/user-repository";
 import SessionManagement from "../presentation/services/session-management/session-management";
+import UserController from "src/presentation/controllers/user/user-controller";
+import { IUserEventBusSymbol } from "src/domain/events/user/user-event-bus/user-event-bus-interface";
+import UserEventBus from "src/domain/events/user/user-event-bus/user-event-bus";
+import { IUserPoliciesSymbol } from "src/domain/policies/user-policies/user-policies-interface";
+import UserPolicies from "src/domain/policies/user-policies/user-policies";
 
 @Module({
   imports: [],
-  controllers: [TokenController],
+  controllers: [TokenController, UserController],
   providers: [
     {
       provide: ITokenManagementSymbol,
@@ -38,6 +43,14 @@ import SessionManagement from "../presentation/services/session-management/sessi
     {
       provide: ISessionManagementSymbol,
       useClass: SessionManagement,
+    },
+    {
+      provide: IUserEventBusSymbol,
+      useClass: UserEventBus,
+    },
+    {
+      provide: IUserPoliciesSymbol,
+      useClass: UserPolicies,
     },
   ],
 })

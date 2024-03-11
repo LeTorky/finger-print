@@ -7,6 +7,10 @@ export default interface IUserRepository {
   getUserById(id: UUID): Promise<User>;
 
   getUserBySsoId(ssoId: string): Promise<User>;
+
+  saveUser(userToSave: User): Promise<User>;
+
+  deleteUser(id: UUID): Promise<boolean>;
 }
 
 export const IUserRepositorySymbol = Symbol("IUserRepository");
