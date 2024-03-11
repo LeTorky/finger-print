@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import ICORS from "./cors-interface";
 import * as dotenv from "dotenv";
-import { Injectable, Req, Res, Next } from "@nestjs/common";
+import { Req, Res, Next } from "@nestjs/common";
 import { NestMiddleware } from "@nestjs/common";
 
 dotenv.config();

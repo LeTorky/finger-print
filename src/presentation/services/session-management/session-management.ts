@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import ISessionManagement from "./session-management-interface";
 import { Request } from "express";
+import SessionException from "../exceptions/session-exceptions";
 
 @Injectable()
 export default class SessionManagement implements ISessionManagement {
@@ -10,12 +11,18 @@ export default class SessionManagement implements ISessionManagement {
   }
 
   private extractToken(req: Request): string {
-    const tokenHeader = req.headers["authorization"] as string;
-    return tokenHeader.split("AccessToken ")[1];
+    try {
+      const tokenHeader = req.headers["authorization"] as string;
+      return tokenHeader.split("AccessToken ")[1];
+    } catch {
+      throw new SessionException("No or invalid AccessToken.");
+    }
   }
 
   getSession(req: Request): any {
     const token = this.extractToken(req);
+    const session = this.sessionLookup[token];
+    if (!session) throw new SessionException("Expired AccessToken.");
     return this.sessionLookup[token];
   }
 
@@ -25,7 +32,8 @@ export default class SessionManagement implements ISessionManagement {
 
   deleteSession(req: Request): void {
     const customToken = this.extractToken(req);
-    if (!this.sessionLookup[customToken]) throw Error("to do");
+    if (!this.sessionLookup[customToken])
+      throw new SessionException("Already Logged out.");
     delete this.sessionLookup[customToken];
   }
 }

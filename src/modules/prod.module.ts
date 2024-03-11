@@ -21,6 +21,8 @@ import { NamespaceRepository } from "src/infrastructure/data-access/namespace-re
 import { INamespaceUseCasesSymbol } from "src/application/use-cases/namespace-use-cases/namespace-use-cases-interface";
 import NamespaceUseCases from "src/application/use-cases/namespace-use-cases/namespace-use-cases";
 import NamespaceController from "src/presentation/controllers/namespace/namespace-controller";
+import { APP_FILTER } from "@nestjs/core";
+import ExceptionHandler from "src/presentation/middlewares/exception-handler/exception-handler";
 
 @Module({
   imports: [],
@@ -65,6 +67,10 @@ import NamespaceController from "src/presentation/controllers/namespace/namespac
     {
       provide: INamespaceUseCasesSymbol,
       useClass: NamespaceUseCases,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: ExceptionHandler,
     },
   ],
 })

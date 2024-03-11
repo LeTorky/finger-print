@@ -6,6 +6,7 @@ import IUserPolicies from "../policies/user-policies/user-policies-interface";
 import IUserEvent from "../events/user/user-events/user-event-interface";
 import IUserEventBus from "../events/user/user-event-bus/user-event-bus-interface";
 import Namespace from "../entities/namespace";
+import NoPermission from "../common/domain-common-exceptions";
 
 export default class User extends Aggregate<UUID> {
   private contactInfo: ContactInfo;
@@ -30,7 +31,8 @@ export default class User extends Aggregate<UUID> {
     namespacePermissions: NamespacePermissions[],
     userPolicies: IUserPolicies
   ): User {
-    if (!userPolicies.canCreateNewUser(this)) throw Error("to do");
+    if (!userPolicies.canCreateNewUser(this))
+      throw new NoPermission("Not enough permission to create users.");
     return new User(randomUUID(), ssoId, contactInfo, namespacePermissions);
   }
 
@@ -41,7 +43,8 @@ export default class User extends Aggregate<UUID> {
     namespacePermissions: NamespacePermissions[],
     userPolicies: IUserPolicies
   ): User {
-    if (!userPolicies.canViewUser(this)) throw Error("to do");
+    if (!userPolicies.canViewUser(this))
+      throw new NoPermission("Not enough permission to view users.");
     return new User(id, ssoId, contactInfo, namespacePermissions);
   }
 
@@ -58,7 +61,8 @@ export default class User extends Aggregate<UUID> {
     event: IUserEvent,
     eventBus: IUserEventBus
   ) {
-    if (!userPolicies.canEditUser(this)) throw Error("to do");
+    if (!userPolicies.canEditUser(this))
+      throw new NoPermission("Not enough permission to edit users.");
     eventBus.publishUserEvent(event);
   }
 
@@ -108,12 +112,14 @@ export default class User extends Aggregate<UUID> {
   }
 
   createNamespace(name: string, userPolicies: IUserPolicies): Namespace {
-    if (!userPolicies.canCreateNameSpace(this)) throw Error("to do");
+    if (!userPolicies.canCreateNameSpace(this))
+      throw new NoPermission("Not enough permission to create namespaces.");
     return new Namespace(name);
   }
 
   updateNamespace(newName: string, userPolicies: IUserPolicies): Namespace {
-    if (!userPolicies.canEditNameSpace(this)) throw Error("to do");
+    if (!userPolicies.canEditNameSpace(this))
+      throw new NoPermission("Not enough permission to edit users.");
     return new Namespace(newName);
   }
 }

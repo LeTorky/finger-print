@@ -20,6 +20,7 @@ import IUserEventBus, {
 import IUserEvent from "src/domain/events/user/user-events/user-event-interface";
 import UserEvent from "src/domain/events/user/user-events/user-update-event";
 import { UUID } from "crypto";
+import NoPermission from "src/domain/common/domain-common-exceptions";
 
 @Injectable()
 export default class UserUseCases implements IUserUseCases {
@@ -84,7 +85,7 @@ export default class UserUseCases implements IUserUseCases {
       callerSsoID != userSsoIdToFetch &&
       !this.userPolicies.canViewUser(callingUser)
     )
-      throw Error("to do");
+      throw new NoPermission("Not enough permission to view users.");
     const user = await this.userRepository.getUserBySsoId(userSsoIdToFetch);
     return user.getRepresentation() as UserDTO;
   }
@@ -140,7 +141,8 @@ export default class UserUseCases implements IUserUseCases {
 
   async deleteUser(id: UUID, callerSsoID: string): Promise<boolean> {
     const callingUser = await this.userRepository.getUserBySsoId(callerSsoID);
-    if (!this.userPolicies.canDeleteUser(callingUser)) throw Error("to do");
+    if (!this.userPolicies.canDeleteUser(callingUser))
+      throw new NoPermission("Not enough permission to delete users.");
     const output = await this.userRepository.deleteUser(id);
     return output;
   }

@@ -53,13 +53,15 @@ export default class UserController {
     return fetchedUser;
   }
 
-  @Put()
+  @Put(":id")
   async editUser(
     @Req() req: Request,
+    @Param("id") id: UUID,
     @Body("user") userToEdit: UserDTO
   ): Promise<UserDTO> {
     const session = this.sessionManagement.getSession(req);
     const ssoId = session["ssoId"];
+    userToEdit.id = id;
     const edittedUser = this.userUseCases.editUser(userToEdit, ssoId);
     return edittedUser;
   }
