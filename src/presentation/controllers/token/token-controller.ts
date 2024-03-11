@@ -32,12 +32,6 @@ export class TokenController {
     this.sessionManagement = SessionManagement;
   }
 
-  @Post("logout")
-  async logOut(@Req() req: Request, @Res() res: Response): Promise<Response> {
-    this.sessionManagement.deleteSession(req);
-    return res.status(200).send("OK");
-  }
-
   @Post("custom")
   async getCustomToken(
     @Body("code") code: string,
@@ -71,5 +65,11 @@ export class TokenController {
       .setHeader("Authorization", `AccessToken ${customToken}`)
       .status(200)
       .send("OK");
+  }
+
+  @Post("logout")
+  async logOut(@Req() req: Request, @Res() res: Response): Promise<Response> {
+    this.sessionManagement.deleteSession(req);
+    return res.status(200).send("OK");
   }
 }
