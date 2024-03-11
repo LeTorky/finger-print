@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Inject,
   Param,
   Post,
@@ -39,6 +40,17 @@ export default class UserController {
     const ssoId = session["ssoId"];
     const createdUser = this.userUseCases.createNewUser(userToCreate, ssoId);
     return createdUser;
+  }
+
+  @Get(":id")
+  async getUserBySsoId(
+    @Req() req: Request,
+    @Param("id") ssoIdToGet: string
+  ): Promise<UserDTO> {
+    const session = this.sessionManagement.getSession(req);
+    const ssoId = session["ssoId"];
+    const fetchedUser = this.userUseCases.getUserBySsoID(ssoId, ssoIdToGet);
+    return fetchedUser;
   }
 
   @Put()

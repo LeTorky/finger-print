@@ -1,6 +1,7 @@
 import Namespace from "src/domain/entities/namespace";
 import INamespaceRepository from "./namespace-repository-interface";
 import namespaceModel from "src/infrastructure/database-context/models/namespace-model";
+import userModel from "src/infrastructure/database-context/models/user-model";
 
 export class NamespaceRepository implements INamespaceRepository<string> {
   async getNamespaceById(name: string): Promise<Namespace> {
@@ -10,7 +11,6 @@ export class NamespaceRepository implements INamespaceRepository<string> {
   }
 
   async createNamespace(nameSpace: Namespace): Promise<Namespace> {
-    console.log(nameSpace.getName());
     await namespaceModel.create({
       name: nameSpace.getName(),
     });
@@ -21,12 +21,20 @@ export class NamespaceRepository implements INamespaceRepository<string> {
     oldName: string,
     namespace: Namespace
   ): Promise<Namespace> {
-    const updatedUser = await namespaceModel.findOneAndUpdate(
-      { name: oldName },
-      { name: namespace.getName() },
-      { new: true }
+    const newNamespace = await this.createNamespace(namespace);
+    await userModel.updateMany(
+      { "namespacePermissions.namespace": oldName },
+      {
+        $set: {
+          "namespacePermissions.$[element].namespace": newNamespace.getName(),
+        },
+      },
+      {
+        arrayFilters: [{ "element.namespace": oldName }],
+      }
     );
-    return new Namespace(updatedUser.name);
+    await this.deleteNamespace(oldName);
+    return namespace;
   }
 
   async deleteNamespace(name: string): Promise<boolean> {

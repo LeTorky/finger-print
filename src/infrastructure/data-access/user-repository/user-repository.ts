@@ -13,7 +13,12 @@ import { Injectable } from "@nestjs/common";
 @Injectable()
 export default class UserRepository implements IUserRepository<UUID> {
   async createUser(user: User): Promise<User> {
-    await userModel.create(user.getRepresentation());
+    const userRepresentation = user.getRepresentation();
+    userRepresentation.namespacePermissions.forEach(
+      (namespacePermission) =>
+        (namespacePermission.namespace = namespacePermission.namespace.name)
+    );
+    await userModel.create(userRepresentation);
     return user;
   }
 
@@ -54,20 +59,26 @@ export default class UserRepository implements IUserRepository<UUID> {
   }
 
   async getUserById(id: UUID): Promise<User> {
-    const user = await userModel.findById(id);
+    const user = await userModel
+      .findById(id)
+      .populate("namespacePermissions.namespace");
     return this.modelToUser(user);
   }
 
   async getUserBySsoId(ssoId: string): Promise<User> {
-    const user = await userModel.findOne({ ssoId: ssoId });
+    const user = await userModel
+      .findOne({ ssoId: ssoId })
+      .populate("namespacePermissions.namespace");
     return this.modelToUser(user);
   }
 
   async saveUser(userToSave: User): Promise<User> {
-    await userModel.updateOne(
-      { _id: userToSave.getId() },
-      userToSave.getRepresentation()
+    const userRepresentation = userToSave.getRepresentation();
+    userRepresentation.namespacePermissions.forEach(
+      (namespacePermission) =>
+        (namespacePermission.namespace = namespacePermission.namespace.name)
     );
+    await userModel.updateOne({ _id: userToSave.getId() }, userRepresentation);
     return userToSave;
   }
 

@@ -107,12 +107,12 @@ export default class User extends Aggregate<UUID> {
     };
   }
 
-  createNamespace(name: string, userPolicies: IUserPolicies) {
+  createNamespace(name: string, userPolicies: IUserPolicies): Namespace {
     if (!userPolicies.canCreateNameSpace(this)) throw Error("to do");
     return new Namespace(name);
   }
 
-  updateNamespace(newName: string, userPolicies: IUserPolicies) {
+  updateNamespace(newName: string, userPolicies: IUserPolicies): Namespace {
     if (!userPolicies.canEditNameSpace(this)) throw Error("to do");
     return new Namespace(newName);
   }

@@ -1,13 +1,17 @@
 import { Schema } from "mongoose";
-import { namespaceSchema } from "./namespace-schema";
 import { permissionsSchema } from "./permissions-schema";
 import INamespacePermission from "src/domain/interfaces/namespace-permission-interface";
+import { namespaceTable } from "./namespace-schema";
 
-const namespacePermissionsSchema = new Schema<INamespacePermission>({
-    namespace: namespaceSchema,
+const namespacePermissionsSchema = new Schema<INamespacePermission>(
+  {
+    namespace: {
+      type: String,
+      ref: namespaceTable,
+    },
     permissionList: permissionsSchema,
   },
-  { _id: false },
+  { _id: false }
 );
 
 export { namespacePermissionsSchema };

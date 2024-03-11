@@ -30,23 +30,16 @@ export default class NamespaceUseCases implements INamespaceUseCases {
   private namespaceRepository: INamespaceRepository<string>;
   private userRepository: IUserRepository<UUID>;
   private userPolicies: IUserPolicies;
-  private userEventBus: IUserEventBus;
 
   constructor(
     @Inject(INamespaceRepositorySymbol)
     namespaceRepository: INamespaceRepository<UUID>,
     @Inject(IUserRepositorySymbol) userRepository: IUserRepository<UUID>,
-    @Inject(IUserPoliciesSymbol) userPolicies: IUserPolicies,
-    @Inject(IUserEventBusSymbol) userEventBus: IUserEventBus
+    @Inject(IUserPoliciesSymbol) userPolicies: IUserPolicies
   ) {
     this.namespaceRepository = namespaceRepository;
     this.userRepository = userRepository;
     this.userPolicies = userPolicies;
-    this.userEventBus = userEventBus;
-  }
-
-  private turnDTOToEntity(namespaceDTO: NamespaceDTO): Namespace {
-    return new Namespace(namespaceDTO.name);
   }
 
   async getNamespaceByName(
@@ -82,9 +75,10 @@ export default class NamespaceUseCases implements INamespaceUseCases {
       namespace.name,
       this.userPolicies
     );
-    const savedNamespace =
-      await this.namespaceRepository.createNamespace(newNamespace);
-    await this.namespaceRepository.deleteNamespace(namespaceName);
+    const savedNamespace = await this.namespaceRepository.changeNamespaceId(
+      namespaceName,
+      newNamespace
+    );
     return savedNamespace.getRepresentation();
   }
 
