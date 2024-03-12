@@ -1,5 +1,9 @@
 export default interface ITokenManagement {
-  IssueToken(content: {}, expirationTime: number): string;
+  IssueToken(
+    content: {},
+    tokenExpirationTime: number,
+    refreshTokenExpirationTime: number
+  ): { token: string; refreshToken: string };
   DecodeToken(token: string): any;
 }
 

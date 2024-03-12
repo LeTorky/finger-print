@@ -46,7 +46,7 @@ export class TokenController {
       redirect_uri: origin,
     });
     const accessToken = oAuthResponse["access_token"];
-    const refreshToken = oAuthResponse["refresh_token"];
+    const accessRefreshToken = oAuthResponse["refresh_token"];
     const payLoad = this.oAuthClient.decodeAccessToken(accessToken);
     const ssoId = payLoad["sub"];
     const user = await this.userUseCases.getUserBySsoID(ssoId, ssoId);
@@ -55,16 +55,43 @@ export class TokenController {
     // Can't provide database column in a token (Vulnerability).
     delete user.id;
 
-    const customToken = this.tokenManager.IssueToken(user, 87300);
-    this.sessionManagement.createSession(customToken, {
-      ssoId: user.ssoId,
-      id: userId,
-      accessToken,
+    const TokenTTL = 43650;
+    const refreshTTL = 87300;
+    const { token, refreshToken } = this.tokenManager.IssueToken(
+      user,
+      TokenTTL,
+      refreshTTL
+    );
+    this.sessionManagement.createSession(
+      token,
+      {
+        ssoId: user.ssoId,
+        id: userId,
+        accessToken,
+        refreshToken: accessRefreshToken,
+      },
+      TokenTTL,
       refreshToken,
-    });
+      refreshTTL
+    );
 
     return res
-      .setHeader("Authorization", `AccessToken ${customToken}`)
+      .setHeader("Authorization", `AccessToken ${token}`)
+      .setHeader("Refresh-Token", `AccessToken ${refreshToken}`)
+      .status(200)
+      .send("OK");
+  }
+
+  @Post("refresh")
+  async refreshCustomToken(
+    @Res() res: Response,
+    @Req() req: Request
+  ): Promise<Response> {
+    const TokenTTL = 43650;
+    const newCustomToken = this.sessionManagement.refreshSession(req, TokenTTL);
+
+    return res
+      .setHeader("Authorization", `AccessToken ${newCustomToken}`)
       .status(200)
       .send("OK");
   }
