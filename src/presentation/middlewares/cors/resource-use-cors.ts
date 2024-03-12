@@ -13,7 +13,7 @@ const ALLOWED_ORIGINS: string[] = (process.env.ALLOWED_ORIGINS || "")
 export class ResourceUseCORS implements ICORS, NestMiddleware {
   checkRequest(req: Request): void {
     const origin = req.headers["origin"];
-    if (!ALLOWED_ORIGINS.includes(origin))
+    if (!ALLOWED_ORIGINS.includes("*") && !ALLOWED_ORIGINS.includes(origin))
       throw new CORSException("Unallowed Origin");
   }
 
