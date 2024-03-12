@@ -6,10 +6,8 @@ import { Injectable } from "@nestjs/common";
 
 dotenv.config();
 
-const privateKeyPath = process.env.PRIVATE_KEY_PATH;
-const publicKeyPath = process.env.PUBLIC_KEY_PATH;
-const privateKey = fs.readFileSync(privateKeyPath, "utf8");
-const publicKey = fs.readFileSync(publicKeyPath, "utf8");
+const privateKey = process.env.PRIVATE_KEY;
+const publicKey = process.env.PUBLIC_KEY;
 
 @Injectable()
 export default class TokenManagement implements ITokenManagement {
