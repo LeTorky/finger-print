@@ -13,19 +13,35 @@ refer to `finger-print.postman_collection.json` by importing into Postman for AP
 permissions needed for a user to perform user and namespace CRUD
 
 `"namespacePermissions": {
+
     "namespace":{
+    
         "name": "finger-print"
+        
     },
+    
     "permissionList": {
+    
         "permissionList": [
+        
             "user:read",
+            
             "user:write",
+            
             "user:edit",
+            
             "user:view",
+            
             "namespace:read",
+            
             "namespace:write",
+            
             "namespace:edit",
+            
             "namespace:view",
+        
         ]
+    
     }
+{
 }`
