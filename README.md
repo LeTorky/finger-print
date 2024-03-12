@@ -6,3 +6,23 @@ Client extracts the code and makes a POST request to the backend with the extrac
 Backend processes the request and returns a response with authorization and refresh-token headers.
 
 refer to `finger-print.postman_collection.json` by importing into Postman for API documentations.
+
+permissions needed for a user to perform user and namespace CRUD
+
+`"namespacePermissions": {
+    "namespace":{
+        "name": "finger-print"
+    },
+    "permissionList": {
+        "permissionList": [
+            "user:read",
+            "user:write",
+            "user:edit",
+            "user:view",
+            "namespace:read",
+            "namespace:write",
+            "namespace:edit",
+            "namespace:view",
+        ]
+    }
+}`
