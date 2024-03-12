@@ -5,6 +5,7 @@ export default interface INamespaceRepository<IdType> {
   createNamespace(nameSpace: Namespace): Promise<Namespace>;
   changeNamespaceId(oldName: IdType, namespace: Namespace): Promise<Namespace>;
   deleteNamespace(name: string): Promise<boolean>;
+  getAllNamespaces(): Promise<Namespace[]>;
 }
 
 export const INamespaceRepositorySymbol = Symbol("INamespaceRepository");

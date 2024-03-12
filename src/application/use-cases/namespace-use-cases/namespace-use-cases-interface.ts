@@ -9,6 +9,7 @@ export default interface INamespaceUseCases {
     namespace: NamespaceDTO
   ): Promise<NamespaceDTO>;
   deleteNamespace(callerSsoID: string, name: string): Promise<boolean>;
+  getAllNamespaces(callerSsoID: string): Promise<NamespaceDTO[]>;
 }
 
 export const INamespaceUseCasesSymbol = Symbol("INamespaceUseCases");

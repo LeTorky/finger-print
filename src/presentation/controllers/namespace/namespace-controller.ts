@@ -58,6 +58,15 @@ export default class NamespaceController {
     return fetchedNamespace;
   }
 
+  @Get()
+  async getAllNamespaces(@Req() req: Request): Promise<NamespaceDTO[]> {
+    const session = this.sessionManagement.getSession(req);
+    const ssoId = session["ssoId"];
+    const fetchedNamespaces =
+      await this.namespaceUseCases.getAllNamespaces(ssoId);
+    return fetchedNamespaces;
+  }
+
   @Put(":name")
   async editNamespace(
     @Req() req: Request,

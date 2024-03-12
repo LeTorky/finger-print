@@ -9,6 +9,10 @@ export class NamespaceRepository implements INamespaceRepository<string> {
     if (!namespaceInstance) return null;
     return new Namespace(namespaceInstance.name);
   }
+  async getAllNamespaces(): Promise<Namespace[]> {
+    const namespaceInstances = await namespaceModel.find();
+    return namespaceInstances.map((namespace) => new Namespace(namespace.name));
+  }
 
   async createNamespace(nameSpace: Namespace): Promise<Namespace> {
     await namespaceModel.create({

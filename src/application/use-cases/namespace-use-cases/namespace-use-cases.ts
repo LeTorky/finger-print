@@ -44,6 +44,14 @@ export default class NamespaceUseCases implements INamespaceUseCases {
     return namespace.getRepresentation();
   }
 
+  async getAllNamespaces(callerSsoID: string): Promise<NamespaceDTO[]> {
+    const callingUser = await this.userRepository.getUserBySsoId(callerSsoID);
+    if (!this.userPolicies.canViewNameSpace(callingUser))
+      throw new NoPermission("Not enough permissions to view name spaces.");
+    const namespaces = await this.namespaceRepository.getAllNamespaces();
+    return namespaces.map((namespace) => namespace.getRepresentation());
+  }
+
   async createNewNamespace(
     callerSsoID: string,
     name: string
